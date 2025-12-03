@@ -1,0 +1,19 @@
+{
+  "name": "boilerplate-auto",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GuilhermeD9/boilerplate-automation.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GuilhermeD9/boilerplate-automation/issues"
+  },
+  "homepage": "https://github.com/GuilhermeD9/boilerplate-automation#readme"
+}
