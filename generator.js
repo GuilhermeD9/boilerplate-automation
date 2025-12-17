@@ -11,7 +11,7 @@ const toCamelCase = (str) => {
 
     return parts.map((word, index) => {
         if (index === 0) {
-            const prefixes = ['nr', 'cd', 'ds', 'dt', 'fl', 'vl', 'nm'];
+            const prefixes = ['nr', 'cd', 'ds', 'dt', 'fl', 'vl', 'nm', 'tp'];
             for (const p of prefixes) {
                 if (word.startsWith(p) && word.length > p.length) {
                     return p + word.charAt(p.length).toUpperCase() + word.slice(p.length + 1);
@@ -119,7 +119,7 @@ ${data.columns.map(col => {
     if (col.isId) out += `   @Id\n`;
     out += `   @Column(name = "${col.originalName}")\n   private ${col.javaType} ${col.javaName};`
     return out;
-}).join('\n\n')
+}).join('\n\n')}
 }`; 
 }
 
@@ -130,12 +130,15 @@ function generateDTO(data) {
 
 public enum ${data.className}DTO {;
 
-${data.columns.map(col => `   protected interface ${col.pascalName} {
-    @NotNull
+${data.columns.map(col => {
+    const notBlank = col.javaType === 'String' ? '@NotBlank' : '@NotNull';
+    return `   protected interface ${col.pascalName} {
+    ${notBlank}
     ${col.annotation}
     @Schema(description = " ", example = " ")
     ${col.javaType} get${col.pascalName}();
-    }`).join('\n')}
+    }`;
+}).join('\n\n')}
 
     public enum Request {;
         @Data
@@ -145,7 +148,7 @@ ${data.columns.map(col => `   protected interface ${col.pascalName} {
         }
         @Data
         @EqualsAndHashCode(callSuper = true)
-        public static class Cadastro extends Base { }
+        public static class Cadastro extends Base {}
     }
 
     public enum Response {;
