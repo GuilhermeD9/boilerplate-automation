@@ -3,20 +3,36 @@ const path = require('path');
 
 const INPUT_FILE = 'ddl.txt';
 
+// V2.0
+
 const toCamelCase = (str) => {
-    const parts = str.toLowerCase().split('_')
+    let parts = str.toLowerCase().split('_');
     if (parts[0].length === 3) parts.shift();
+
     return parts.map((word, index) => {
-        if (index === 0) return word;
+        if (index === 0) {
+            const prefixes = ['nr', 'cd', 'ds', 'dt', 'fl', 'vl', 'nm'];
+            for (const p of prefixes) {
+                if (word.startsWith(p) && word.length > p.length) {
+                    return p + word.charAt(p.length).toUpperCase() + word.slice(p.length + 1);
+                }
+            }
+            return word;
+        } 
         return word.charAt(0).toUpperCase() + word.slice(1);
         }).join('');
 };
 
 const toPascalCase = (str) => {
-    const parts = str.toLowerCase().split('_');
-    const cleanParts = parts.filter(p => p !== 'tb' && p.length > 3);
-    const finalParts = cleanParts.length > 0 ? cleanParts : parts;
-    return finalParts.map(word => word.charAt(0).toUpperCase())
+    let parts = str.toLowerCase().split('_');
+
+    if (parts[0] === 'tb') parts.shift();
+
+    if(parts.length > 0 && parts[0].length === 3) {
+        parts.shift();
+    }
+
+    return parts.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
 };
 
 const mapOracleType = (type, precision, scale) => {
@@ -37,7 +53,7 @@ const mapOracleType = (type, precision, scale) => {
 
 function parseDDL(ddl) {
     const lines = ddl.split('\n');
-    let tableName = '';
+    let tableName = 'Unknown';
     let schema = 'dbo';
     const columns = [];
     const pks = [];
