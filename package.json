@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/GuilhermeD9/boilerplate-automation/issues"
   },
-  "homepage": "https://github.com/GuilhermeD9/boilerplate-automation#readme"
+  "homepage": "https://github.com/GuilhermeD9/boilerplate-automation#readme",
+  "dependencies": {
+    "clipboardy": "^5.0.2"
+  }
 }

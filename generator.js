@@ -25,9 +25,7 @@ const toCamelCase = (str) => {
 
 const toPascalCase = (str) => {
     let parts = str.toLowerCase().split('_');
-
     if (parts[0] === 'tb') parts.shift();
-
     if(parts.length > 0 && parts[0].length === 3) {
         parts.shift();
     }
@@ -42,7 +40,7 @@ const mapOracleType = (type, precision, scale) => {
 
     if (type.includes('NUMBER')) {
         if (scale > 0) return { java: 'BigDecimal', annotation: `@Digits(integer = ${precision - scale}, fraction = ${scale})` };
-        if (precision > 9) return { java: 'Long', annotation: `@Min(0) @Max(${'9'.repeat(precision)})` }
+        if (precision > 9) return { java: 'Long', annotation: `@Min(0) @Max(${'9'.repeat(precision)}L)` }
         return { java: 'Integer', annotation: `@Min(0) @Max(${'9'.repeat(precision)})` };
     }
     if (type.includes('CHAR') || type.includes ('VARCHAR2') || type.includes('TEXT')) return { java: 'String', annotation: `@Size(max = ${precision})` };
@@ -58,13 +56,14 @@ function parseDDL(ddl) {
     const columns = [];
     const pks = [];
 
-    const createTableMatch = ddl.match(/CREATE TABLE (\w+)\.(\w+)/i);
+    const createTableMatch = ddl.match(/CREATE TABLE (\w+)\.(\w+)/i) || ddl.match(/CREATE TABLE (\w+)/i);
     if (createTableMatch) {
-        schema = createTableMatch[1];
-        tableName = createTableMatch[2];
-    } else {
-        const simpleMatch = ddl.match(/CREATE TABLE (\w+)/i);
-        if (simpleMatch) tableName = simpleMatch[1];
+        if (createTableMatch.length === 3) {
+            schema = createTableMatch[1];
+            tableName = createTableMatch[2];
+        } else {
+            tableName = createTableMatch[1];
+        }
     }
 
     const pkMatch = ddl.match(/PRIMARY KEY \(([^)]+)\)/i);
@@ -76,7 +75,7 @@ function parseDDL(ddl) {
         const trimmed = line.trim();
         const colMatch = trimmed.match(/^(\w+)\s+(\w+)(?:\((\d+)(?:,(\d+))?\))?/);
 
-        if (colMatch && !trimmed.startsWith('CONSTRAINT') && !trimmed.startsWith('CREATE') && !trimmed.startsWith('KEY')) {
+        if (colMatch && !trimmed.startsWith('CONSTRAINT') && !trimmed.startsWith('CREATE') && !trimmed.startsWith('KEY') && !trimmed.startsWith(')')) {
             const [_, colName, colType, precision, scale] = colMatch;
             const typeInfo = mapOracleType(colType, precision, scale);
 
@@ -102,8 +101,8 @@ function parseDDL(ddl) {
 
 function generateEntity(data) {
     const pkClass = data.columns.filter(c => c.isId).length > 1 ? `@IdClass(${data.className}Id.class)` : '';
-    return `
-/** JAVA ENTITY **/
+
+    return `/** JAVA ENTITY **/
 
 @Data
 @Entity
@@ -125,8 +124,7 @@ ${data.columns.map(col => {
 
 function generateDTO(data) {
     const interfacesList = data.columns.map(c => c.pascalName).join(', ');
-    return `
-/** JAVA DTO **/
+    return `/** JAVA DTO **/
 
 public enum ${data.className}DTO {;
 
@@ -146,6 +144,7 @@ ${data.columns.map(col => {
         public static class Base implements ${interfacesList} {
         ${data.columns.map(col => `           private ${col.javaType} ${col.javaName};`).join('\n')}
         }
+        
         @Data
         @EqualsAndHashCode(callSuper = true)
         public static class Cadastro extends Base {}
