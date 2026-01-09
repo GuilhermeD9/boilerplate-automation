@@ -1,0 +1,58 @@
+{
+  "naming": {
+    "prefixes": ["nr", "cd", "ds", "dt", "fl", "vl", "nm", "tp", "chm", "pes"],
+    "tablePrefixes": ["tb"],
+    "removeThreeLetterPrefixes": true
+  },
+  "typeMapping": {
+    "NUMBER": {
+      "default": "Integer",
+      "large": "Long",
+      "decimal": "BigDecimal",
+      "largeThreshold": 9
+    },
+    "STRING": {
+      "types": ["CHAR", "VARCHAR2", "TEXT"],
+      "default": "String"
+    },
+    "DATE": {
+      "types": ["DATE", "TIMESTAMP"],
+      "default": "LocalDateTime"
+    }
+  },
+  "validation": {
+    "generateAnnotations": true,
+    "stringValidation": "@NotBlank",
+    "otherValidation": "@NotNull",
+    "generateSchema": true
+  },
+  "output": {
+    "directory": "generated",
+    "fileExtensions": {
+      "entity": ".java",
+      "dto": "DTO.java"
+    },
+    "indentation": "    "
+  },
+  "templates": {
+    "entity": {
+      "imports": [
+        "lombok.Data",
+        "javax.persistence.*",
+        "java.io.Serializable",
+        "java.beans.Transient"
+      ],
+      "classAnnotations": ["@Data", "@Entity"],
+      "serialVersionUID": true
+    },
+    "dto": {
+      "imports": [
+        "lombok.Data",
+        "lombok.EqualsAndHashCode",
+        "javax.validation.constraints.*",
+        "io.swagger.v3.oas.annotations.media.Schema"
+      ],
+      "generateRequestResponse": true
+    }
+  }
+}

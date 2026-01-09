@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node generator.js",
+    "simple": "node simple-generator.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,6 +19,8 @@
   },
   "homepage": "https://github.com/GuilhermeD9/boilerplate-automation#readme",
   "dependencies": {
-    "clipboardy": "^5.0.2"
+    "chalk": "^5.6.2",
+    "clipboardy": "^5.0.2",
+    "inquirer": "^8.2.6"
   }
 }
