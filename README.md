@@ -7,7 +7,6 @@ Ferramenta para transformar DDL de banco de dados Oracle em Entities JPA e DTOs 
 - ✅ **CLI Interativa** - Interface amigável com prompts
 - ✅ **Múltiplos Arquivos** - Gera Entity e DTO separados
 - ✅ **Configuração Customizável** - Personalize via `config.json`
-- ✅ **Palavras Compostas** - Suporte correto para nomes como `dtRessarcimentoCliente`
 - ✅ **Validações Automáticas** - Gera anotações Bean Validation
 - ✅ **Clipboard Integration** - Copia código gerado
 - ✅ **Tratamento de Erros** - Robusto e informativo
@@ -179,11 +178,3 @@ public enum ClienteDTO {;
 - Configure mapeamento de tipos
 - Ajuste validações e anotações
 - Defina formato de saída
-
-## 🚀 Próximos Passos
-
-- [ ] Suporte a outros bancos (PostgreSQL, MySQL)
-- [ ] Geração de Repository/Service/Controller
-- [ ] Templates customizáveis
-- [ ] Watch mode para desenvolvimento
-- [ ] Integração com IDE (VS Code extension)
